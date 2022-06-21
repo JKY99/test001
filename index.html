@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <h1>this is my site<h1></h1>
+        <input id="bookName" value="미움받을 용기" type="text">
+        <button id="search">검색</button>
+        <p></p>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.js"
+            integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+        <script>
+            $("#search").click(function(){
+                bookSearch();
+            });
+            
+            function bookSearch() {
+                const REST_API_KEY = "bfa7a7ccf41bd56c72e2b0f365aa5803";
+                $.ajax({
+                    method: "GET",
+                    url: "https://dapi.kakao.com/v3/search/book?target=title",
+                    data: { query: $("#bookName").val() },
+                    headers: { Authorization: `KakaoAK ${REST_API_KEY}` }
+                })
+                    .done(function (msg) {
+                        try {
+                            const title = msg.documents[0].title;
+                            const thumbnailLink = msg.documents[0].thumbnail;
+                            $("p").empty();
+                            $("p").append("<strong>" + title + "</strong>");
+                            $("p").append("<img src='" + thumbnailLink + "'/>");
+                        } catch (error) {
+                            const bookName = $("#bookName").val();
+                            alert(bookName + "에 해당하는 검색목록이 없습니다.");
+                        }
+                    });
+            }
+        </script>
+
+</body>
+
+</html>
